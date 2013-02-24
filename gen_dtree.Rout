@@ -1,0 +1,76 @@
+
+R version 2.15.2 (2012-10-26) -- "Trick or Treat"
+Copyright (C) 2012 The R Foundation for Statistical Computing
+ISBN 3-900051-07-0
+Platform: x86_64-redhat-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+[Previously saved workspace restored]
+
+> #######################
+> #load the rpart library
+> require(rpart)
+Loading required package: rpart
+> 
+> #######################
+> #load the data
+> setwd("/tmp")
+> p_data = read.csv(file="1_demo_data.tsv",sep="\t",dec=".",header=TRUE)
+> #head
+> summary(p_data)
+    gender           age           country       friend_count   
+ female:34377   Min.   :18.00   CANADA : 2114   Min.   :  0.00  
+ male  :15623   1st Qu.:19.00   EGYPT  : 1700   1st Qu.:  0.00  
+                Median :21.00   FRANCE : 4130   Median :  2.00  
+                Mean   :21.86   GERMANY: 4206   Mean   : 15.83  
+                3rd Qu.:24.00   MEXICO : 2134   3rd Qu.: 15.00  
+                Max.   :30.00   UK     :10162   Max.   :100.00  
+                                USA    :25554                   
+    lifetime       city_played     pictionary_played scramble_played 
+ Min.   :  0.00   Min.   : 0.000   Min.   : 0.000    Min.   : 0.000  
+ 1st Qu.:  4.00   1st Qu.: 1.000   1st Qu.: 0.000    1st Qu.: 0.000  
+ Median :  9.00   Median : 3.000   Median : 2.000    Median : 2.000  
+ Mean   : 25.01   Mean   : 9.384   Mean   : 5.863    Mean   : 3.993  
+ 3rd Qu.: 44.00   3rd Qu.:10.000   3rd Qu.: 8.000    3rd Qu.: 6.000  
+ Max.   :100.00   Max.   :65.000   Max.   :44.000    Max.   :29.000  
+                                                                     
+ sniper_played           paid      
+ Min.   : 0.000   non_payer:47280  
+ 1st Qu.: 0.000   payer    : 2720  
+ Median : 1.000                    
+ Mean   : 5.765                    
+ 3rd Qu.: 4.000                    
+ Max.   :76.000                    
+                                   
+> 
+> #######################
+> #rpart
+> dtree <- rpart(paid ~ .,data = p_data, method="class")
+> print(dtree)
+n= 50000 
+
+node), split, n, loss, yval, (yprob)
+      * denotes terminal node
+
+1) root 50000 2720 non_payer (0.9456000 0.0544000)  
+  2) friend_count< 10.5 36873    0 non_payer (1.0000000 0.0000000) *
+  3) friend_count>=10.5 13127 2720 non_payer (0.7927935 0.2072065)  
+    6) lifetime< 20.5 8504    0 non_payer (1.0000000 0.0000000) *
+    7) lifetime>=20.5 4623 1903 payer (0.4116375 0.5883625) *
+> 
+> proc.time()
+   user  system elapsed 
+  3.382   0.063   3.424 
