@@ -23,8 +23,9 @@ Usage:
 ./run.sh
 ```
 
-Pre-Requisties:
+Pre-Requisites:
 
 1. ruby 1.9
 2. hadoop
 3. hive
+4. R
