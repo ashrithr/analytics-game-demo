@@ -9,18 +9,18 @@ begin
   require 'parallel'
   require 'ruby-progressbar'
   require 'optparse'
-resuce LoadError
-  STDERR.puts "Requires following gems:
-  parallel
-  ruby-progressbar
+rescue LoadError
+  STDERR.puts 'Requires following gems:
+  1. parallel
+  2. ruby-progressbar
 
   TO install them use:
 
   gem install parallel --no-ri --no-rdoc
-  gem install ruby-progressbar --no-ri --no-rdoc"
+  gem install ruby-progressbar --no-ri --no-rdoc'
 end
 
-abort "Only works with ruby 1.9" if RUBY_VERSION < "1.9"
+abort 'Only works with ruby 1.9' if RUBY_VERSION < '1.9'
 
 # => Command line Arguments
 @options = {}
@@ -28,25 +28,23 @@ option_parser = OptionParser.new do |opts|
   executable_name = File.basename($PROGRAM_NAME)
   opts.banner = "Usage: #{executable_name} [options]"
 
-  opts.on("-l LINES", "--lines LINES",
-    "number of lines to generate to analytics file") do |lines|
+  opts.on('-l LINES', '--lines LINES', 'number of lines to generate to analytics file') do |lines|
     @options[:lines] = lines.to_i
   end
 
-  opts.on("-m", "--multiple-tables", "Generate data to multiple tables used for hive loading") do
+  opts.on('-m', '--multiple-tables', 'Generate data to multiple tables used for hive loading') do
     @hive_data = true
   end
 
-  opts.on("-p PATH", "--output-path PATH",
-    "Path where output should be generated to") do |path|
+  opts.on('-p PATH', '--output-path PATH', 'Path where output should be generated to') do |path|
     @options[:path] = path
   end
 
-  opts.on("-e", "--extra-data", "generate extra data") do
+  opts.on('-e', '--extra-data', 'generate extra data') do
     @extras = true
   end
 
-  opts.on("-h","--help","Help") do
+  opts.on('-h', '--help', 'Help') do
     puts option_parser
     abort
   end
@@ -67,26 +65,25 @@ unless @options.has_key?(:lines)
 end # => end option_parser logic
 
 # => Globals
-@lines = @options[:lines]                  #No. of lines to generate
-@lines_per_process = 500000                #lines to gen by indvidual process
+@lines = @options[:lines]                 #No. of lines to generate
+@lines_per_process = 500000               #lines to gen by indvidual process
 @num_of_processes = @lines > @lines_per_process ?
                     @lines / @lines_per_process :
                     1                     #num_of_processes required to compute
-@options[:path] = "/tmp" unless @options.has_key?(:path)
+@options[:path] = '/tmp' unless @options.has_key?(:path)
                                           #Output path
-@cd = "\t"                                 #column delimeter
+@cd = "\t"                                #column delimeter
 @ld = "\n"                                #line delimeter
-#@extras = false                           #generate extra data : name, phoneno,
-                                            # email, address
+#@extras = false                          #generate extra data : name, phoneno, email, address
 @cid_start = 1000                         #Customer id start int
 @gender_with_probability = {              #Gender hash with probability
   :male   => 30,
   :female => 70
 }
-@lifetime_days = 100                       #Life time in days
+@lifetime_days = 100                      #Life time in days
 @friendcount_maxrange = 100               #Friends count maximum range
 @friendcount_zero_probability = 0.3       #30% of times users dont have friends
-@paid_subscriber_percent = 0.6           #5% users are paid customers
+@paid_subscriber_percent = 0.6            #5% users are paid customers
 @paid_subscriber_frndcount = 5            #users whose frnd_cnt > 5 pay
 @age_with_probability = {                 #Age hash with probability
   18 => 15,
@@ -289,7 +286,7 @@ def main_loop(num_of_lines, cid_start, proc, progress=true)
     output_file_handle = File.open(output_file, "w")
   end
 
-  #header for the file
+  #header for the file => only generate if its not hive data
   # if @hive_data
   #   cust_file_handle.
   #     puts("cid#{@cd}name#{@cd}gender#{@cd}age#{@cd}rdate#{@cd}country#{@cd}"\
