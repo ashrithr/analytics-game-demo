@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
 # =
-# Script to demo analytics for strata
+# Desc: Script to demo analytics for strata
+# Date: Feb 23, 2013
+# Version: 1.0
+# Author: Ashrith (ashrith at cloudwick dot com)
 # =
 RANDOM_GEN="${PWD}/random_hive.rb"
 HIVE_LOAD_SCRIPT="${PWD}/hive_schema.q"

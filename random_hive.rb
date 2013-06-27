@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 # ---
-# => Script to generate random data required for data analytics
+# Desc: Script to generate random data required for data analytics
+# Version: 1.0
+# Date: Feb 24, 2013
+# Author: Ashrith (ashrith at cloudwick dot com)
 # ---
 begin
   require 'rubygems'
@@ -66,15 +69,15 @@ end # => end option_parser logic
 
 # => Globals
 @lines = @options[:lines]                 #No. of lines to generate
-@lines_per_process = 500000               #lines to gen by indvidual process
+@lines_per_process = 500000               #lines to gen by individual process
 @num_of_processes = @lines > @lines_per_process ?
                     @lines / @lines_per_process :
                     1                     #num_of_processes required to compute
 @options[:path] = '/tmp' unless @options.has_key?(:path)
                                           #Output path
-@cd = "\t"                                #column delimeter
-@ld = "\n"                                #line delimeter
-#@extras = false                          #generate extra data : name, phoneno, email, address
+@cd = "\t"                                #column delimiter
+@ld = "\n"                                #line delimiter
+#@extras = false                          #generate extra data : name, phone_no, email, address
 @cid_start = 1000                         #Customer id start int
 @gender_with_probability = {              #Gender hash with probability
   :male   => 30,
@@ -101,13 +104,13 @@ end # => end option_parser logic
   30 => 2,
 }
 @countries_with_probability = {           #Countries hash with probabilities
-  "USA"      => 60,
-  "UK"       => 25,
-  "CANADA"   => 5,
-  "MEXICO"   => 5,
-  "GERMANY"  => 10,
-  "FRANCE"   => 10,
-  "EGYPT"    => 5
+  'USA'      => 60,
+  'UK'       => 25,
+  'CANADA'   => 5,
+  'MEXICO'   => 5,
+  'GERMANY'  => 10,
+  'FRANCE'   => 10,
+  'EGYPT'    => 5
 }
 @games_female = {
   :city       => 50,
@@ -123,12 +126,14 @@ end # => end option_parser logic
 }
 
 # => Definations
-def choose_weighted(weighted)
-  # => Returns value picked from hash passed randomly based on its weight
-  #    All the weights in the hash must be integers
-  # Ex: marbles = { :black => 51, :white => 17 }
-  #     3.times { puts choose_weighted(marbles) }
 
+# Returns value picked from hash passed randomly based on its weight
+# All the weights in the hash must be integers
+# @param [Hash] weighted
+# @return [Hash::Key] key from the hash
+# Ex: marbles = { :black => 51, :white => 17 }
+#     3.times { puts choose_weighted(marbles) }
+def choose_weighted(weighted)
   #caluculate the total weight
   sum = weighted.inject(0) do |sum, item_and_weight|
     sum += item_and_weight[1]
@@ -142,18 +147,22 @@ def choose_weighted(weighted)
   end
 end
 
+# Returns a random phone number
+# @return [FixNum]
 def gen_phone_num
-  # => Returns a random phone number
   "#{rand(900) + 100}-#{rand(900) + 100}-#{rand(1000) + 1000}"
 end
 
+# Returns a random international phone number
+# @return [FixNum]
 def gen_int_phone_num
-  # => Returns a random international phone number
   "011-#{rand(100) + 1}-#{rand(100) + 10}-#{rand(1000) + 1000}"
 end
 
+# Returns a random email based on the usersname
+# @param [String] name
+# @return [String] email
 def gen_email(name)
-  # => Returns a random email based on the usersname
   firstname = name.split.first
   lastname = name.split.last
   domains = %w(yahoo.com gmail.com privacy.net webmail.com msn.com
@@ -162,16 +171,19 @@ def gen_email(name)
          "#{rand(100)}\@#{domains[rand(domains.size)]}"
 end
 
+# Returns a random date, also can specify range to it
+# @param [Float] from
+# @param [Float] to
+# @return [Time]
+# Ex: gen_date
+#     gen_date(Time.local(2010, 1, 1))
+#     gen_date(Time.local(2010, 1, 1), Time.local(2010, 7, 1))
 def gen_date(from=0.0, to=Time.now)
-  # => Returns a random date, also can specify range to it
-  # Ex: gen_date
-  #     gen_date(Time.local(2010, 1, 1))
-  #     gen_date(Time.local(2010, 1, 1), Time.local(2010, 7, 1))
   Time.at(from + rand * (to.to_f - from.to_f))
 end
 
 class Names
-  # => Class that will return some random names based on gender
+  # Class that will return some random names based on gender
   def self.initial
     letters_arr = ('A'..'Z').to_a
     letters_arr[rand(letters_arr.size)]
@@ -211,7 +223,7 @@ class Names
 end
 
 class Address
-  # => Class that will return some random based addresses now only supports USA
+  # Class that will return some random based addresses now only supports USA
   # and UK addresses
   @@street_names = %w( Acacia Beech Birch Cedar Cherry Chestnut Elm Larch Laurel
     Linden Maple Oak Pine Rose Walnut Willow Adams Franklin Jackson Jefferson
@@ -226,18 +238,16 @@ class Address
       " #{@@street_types[rand(@@street_types.size)]}"
   end
 
-  @@line2types = ["Apt", "Bsmt", "Bldg", "Dept", "Fl", "Frnt", "Hngr", "Lbby",
-    "Lot", "Lowr", "Ofc", "Ph", "Pier", "Rear", "Rm", "Side", "Slip", "Spc",
-    "Stop", "Ste", "Trlr", "Unit", "Uppr"]
+  @@line2types = %w(Apt Bsmt Bldg Dept Fl Frnt Hngr Lbby Lot Lowr Ofc Ph Pier Rear Rm Side Slip Spc Stop Ste Trlr Unit Uppr)
 
+  # Returns address line 2
   def self.address_line_2
-    # => Returns address line 2
     "#{@@line2types[rand(@@line2types.size)]} #{rand(999)}"
   end
 
+  # Returns a zip code
   def self.zipcode
-    # => Returns a zip code
-    "%05d" % rand(99999)
+    '%05d' % rand(99999)
   end
 
   def self.uk_post_code
@@ -250,12 +260,8 @@ class Address
     return "#{post_towns[rand(post_towns.size)]}#{num1} #{num2}#{letters}"
   end
 
-  @@us_states = ["AK", "AL", "AR", "AZ", "CA", "CO", "CT", "DC", "DE", "FL",
-                 "GA", "HI", "IA", "ID", "IL", "IN", "KS", "KY", "LA", "MA",
-                 "MD", "ME", "MI", "MN", "MO", "MS", "MT", "NC", "ND", "NE",
-                 "NH", "NJ", "NM", "NV", "NY", "OH", "OK", "OR", "PA", "RI",
-                 "SC", "SD", "TN", "TX", "UT", "VA", "VT", "WA", "WI", "WV",
-                 "WY"]
+  @@us_states = %w(AK AL AR AZ CA CO CT DC DE FL GA HI IA ID IL IN KS KY LA MA MD ME MI MN MO MS MT NC ND NE NH NJ NM
+    NV NY OH OK OR PA RI SC SD TN TX UT VA VT WA WI WV WY)
   def self.state
     # => Returns a state
     @@us_states[rand(@@us_states.size)]
@@ -321,24 +327,24 @@ def main_loop(num_of_lines, cid_start, proc, progress=true)
     country = choose_weighted(@countries_with_probability)
     name = gender == :male ? Names.male_name : Names.female_name
     email = gen_email(name)
-    phone = country == "USA" ? gen_phone_num : gen_int_phone_num
+    phone = country == 'USA' ? gen_phone_num : gen_int_phone_num
     case country
-    when "USA"
+    when 'USA'
       address = "#{Address.address_line_1} #{Address.address_line_2}"\
                 " #{Address.state} #{Address.zipcode}"
-    when "UK"
+    when 'UK'
       address = "#{Address.address_line_1} #{Address.address_line_2}"\
                 " #{Address.uk_post_code}"
-    when "CANADA"
-      address = "N/A"
-    when "MEXICO"
-      address = "N/A"
-    when "GERMANY"
-      address = "N/A"
-    when "FRANCE"
-      address = "N/A"
+    when 'CANADA'
+      address = 'N/A'
+    when 'MEXICO'
+      address = 'N/A'
+    when 'GERMANY'
+      address = 'N/A'
+    when 'FRANCE'
+      address = 'N/A'
     else  #egypt
-      address = "N/A"
+      address = 'N/A'
     end
     # => total_days user played
     rand < 0.6 ? total_days = rand(0..10) :
@@ -356,17 +362,17 @@ def main_loop(num_of_lines, cid_start, proc, progress=true)
     # => paid customer
     if ( friend_count > 10 and total_days > 20 )
       if rand < @paid_subscriber_percent
-        paid_subscriber = "payer"
+        paid_subscriber = 'payer'
       else
-        paid_subscriber = "not_payer"
+        paid_subscriber = 'not_payer'
       end
     else
-      paid_subscriber = "not_payer"
+      paid_subscriber = 'not_payer'
     end
     # ( friend_count > 5 and total_days > 10 ) ? paid_subscriber = "yes" :
     #                                            paid_subscriber = "no"
     # => revenue
-    if paid_subscriber == "payer"
+    if paid_subscriber == 'payer'
       rand < 0.8 ? revenue = rand(5..30) : revenue = rand(30..99)
     else
       revenue = 0
