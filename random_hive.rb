@@ -2,12 +2,23 @@
 # ---
 # => Script to generate random data required for data analytics
 # ---
-require 'rubygems'
-require 'fileutils'
-require 'benchmark'
-require 'parallel'          #gem install parallel
-require 'ruby-progressbar'  #gem install ruby-progressbar
-require 'optparse'
+begin
+  require 'rubygems'
+  require 'fileutils'
+  require 'benchmark'
+  require 'parallel'
+  require 'ruby-progressbar'
+  require 'optparse'
+resuce LoadError
+  STDERR.puts "Requires following gems:
+  parallel
+  ruby-progressbar
+
+  TO install them use:
+
+  gem install parallel --no-ri --no-rdoc
+  gem install ruby-progressbar --no-ri --no-rdoc"
+end
 
 abort "Only works with ruby 1.9" if RUBY_VERSION < "1.9"
 
@@ -22,7 +33,7 @@ option_parser = OptionParser.new do |opts|
     @options[:lines] = lines.to_i
   end
 
-  opts.on("-m", "--multiple-tables", "Generate data for hive") do
+  opts.on("-m", "--multiple-tables", "Generate data to multiple tables used for hive loading") do
     @hive_data = true
   end
 
@@ -333,7 +344,7 @@ def main_loop(num_of_lines, cid_start, proc, progress=true)
       address = "N/A"
     end
     # => total_days user played
-    rand < 0.6 ? total_days = rand(0..10) : 
+    rand < 0.6 ? total_days = rand(0..10) :
                  total_days = rand(10..@lifetime_days)
     # => friends_count
     if rand < @friendcount_zero_probability
