@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # =
-# Desc: Script to demo analytics for strata
+# Desc: Performs analytics on top of random data using Hive and R
 # Date: Feb 23, 2013
 # Version: 1.0
 # Author: Ashrith (ashrith at cloudwick dot com)

@@ -1,23 +1,4 @@
--- group the revenue table by cid
-
--- DROP TABLE IF EXISTS grp_revenue;
--- CREATE TABLE grp_revenue
--- (
--- 	cid int,
--- 	min_rev_date timestamp,
--- 	max_rev_date timestamp,
--- 	usd float
--- );
-
--- INSERT OVERWRITE TABLE 	grp_revenue
--- SELECT cid, min(pdate) as min_rev_date,
--- max(pdate) as max_rev_date,
--- sum(usd) as usd
--- FROM revenue r
--- WHERE usd > 0
--- GROUP BY cid;
-
--- group the gaming table by cid
+-- Creates a table for parsing the data loaded
 
 DROP TABLE IF EXISTS grp_gaming;
 CREATE TABLE grp_gaming
@@ -32,6 +13,8 @@ CREATE TABLE grp_gaming
 	num_played int
 );
 
+-- Writes data into grp_gaming table by aggregating data from loaded data
+
 INSERT OVERWRITE TABLE 	grp_gaming
 SELECT cid,
 min(gdate) as min_played_date,
@@ -45,7 +28,7 @@ FROM gaming_fact g
 GROUP BY cid;
 
 
---generate final table
+-- Generates final table used by R
 DROP TABLE IF EXISTS datafile_table;
 CREATE TABLE datafile_table
 (

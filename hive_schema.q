@@ -1,3 +1,4 @@
+-- Creates customer table and loads data into it
 DROP TABLE IF EXISTS customer;
 CREATE TABLE customer
 (
@@ -13,6 +14,7 @@ CREATE TABLE customer
 
 LOAD DATA LOCAL INPATH '/tmp/analytics_customer0.data' INTO TABLE customer;
 
+-- Creates revenue table and loads data into it
 DROP TABLE IF EXISTS revenue;
 CREATE TABLE revenue
 (
@@ -23,6 +25,7 @@ CREATE TABLE revenue
 
 LOAD DATA LOCAL INPATH '/tmp/analytics_revenue0.data' INTO TABLE revenue;
 
+-- Creates gaming_fact table and loads data into it
 DROP TABLE IF EXISTS gaming_fact;
 CREATE TABLE gaming_fact
 (
